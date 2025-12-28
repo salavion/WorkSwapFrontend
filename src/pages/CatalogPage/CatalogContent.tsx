@@ -9,10 +9,10 @@ import { PublicListingCard } from "@/components";
 import { useNavigate } from "react-router-dom";
 
 interface CatalogContentProps {
-    params: CatalogFilters;
+    filters: CatalogFilters;
     setTotalPages: Dispatch<SetStateAction<number>>
 }
-const CatalogContent = ({ params, setTotalPages}: CatalogContentProps) => {
+const CatalogContent = ({ filters, setTotalPages}: CatalogContentProps) => {
 
     const { i18n } = useTranslation();
     const userLocale = i18n.language || "fi";
@@ -27,14 +27,16 @@ const CatalogContent = ({ params, setTotalPages}: CatalogContentProps) => {
     useEffect(() => {
         const requestId = ++lastRequestId.current;
 
-        getSortedListings(params)
+        /* console.log("Вызов каталога " + requestId + ": ", filters) */
+
+        getSortedListings(filters)
             .then(data => {
                 if (requestId === lastRequestId.current) {
                     setListings(data.listings);
                     setTotalPages(data.totalPages);
                 }
             });
-    }, [params, setTotalPages, userLocale]);
+    }, [filters, setTotalPages, userLocale]);
     
     return (
         <div className="catalog-content">

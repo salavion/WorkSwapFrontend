@@ -23,6 +23,9 @@ const ForumTopicCreateModal = ({tags}: {tags: ForumTag[] | null}) => {
             title,
             content,
             tagName: tag?.name ?? "",
+            language: "",
+            author: { id: 0, openId: "", name: ""},
+            posts: [],
             postsCount: 0
         }
         const topicOpenId: string = await createForumTopic(newTopic);

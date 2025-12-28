@@ -22,11 +22,11 @@ const PublicListingCard = ({listing}: {listing: IShortListing}) => {
 
     const isNew = (new Date().getTime() - new Date(listing.publishedAt).getTime()) < 3 * 24 * 60 * 60 * 1000;
 
-    useEffect(() => {
+    /* useEffect(() => {
         if (!listing.id || !user) return;
 
         checkFavorite(listing.id).then(data => setFavorite(data));
-    }, [listing.id, user]);
+    }, [listing.id, user]); */
 
     const navigator = () => {
         if (listing.type == "EVENT") {

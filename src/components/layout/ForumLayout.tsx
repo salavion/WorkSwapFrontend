@@ -1,4 +1,4 @@
-import { Avatar, UserMeta } from "@core/components";
+import { UserMeta } from "@core/components";
 import { getForumActivity, IForumActivityItem } from "@core/lib";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -24,7 +24,7 @@ const ForumLayout = () => {
             <aside className="forum-sidebar">
                 <h2>{t(`forum.lastActivity`, { ns: 'common' })}</h2>
                 {activityItems?.slice()
-                    .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime())
+                    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                     .map(item => (
                         <Link 
                             key={item.title} 

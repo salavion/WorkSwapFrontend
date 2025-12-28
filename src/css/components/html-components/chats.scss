@@ -198,7 +198,7 @@ $min-radius: 1px;
 
                 .message {
                     margin-left: auto;
-                    background-color: var(--primary-2xlight);
+                    background-color: var(--primary-dark);
                     border-radius: $big-radius $small-radius $small-radius $big-radius;
 
                     &:last-child {

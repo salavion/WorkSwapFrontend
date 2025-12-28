@@ -102,5 +102,3 @@ const ForumTopicCard = ({topic}: {topic: IForumTopic}) => {
         </div>
     );
 }
-
-export {default as ForumTopicPage} from './ForumTopicPage';

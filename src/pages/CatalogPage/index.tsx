@@ -71,11 +71,8 @@ const CatalogPage = () => {
     const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        contentRef?.current?.scrollTo({
-            top: 0,
-            behavior: 'smooth',
-        });
-    }, [contentRef, filters.page])
+        contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [filters.page]);
 
     return(
         <>
@@ -127,7 +124,7 @@ const CatalogPage = () => {
                             <span>{t(`catalog.sidebar.translationsFilter`, { ns: 'common' })}</span>
                         </label>
                     </div>
-                    <CatalogContent params={cleanFilters} setTotalPages={setTotalPages}/>
+                    <CatalogContent filters={cleanFilters} setTotalPages={setTotalPages}/>
                     <Pagination
                         page={filters.page ?? 0} 
                         totalPages={totalPages} 

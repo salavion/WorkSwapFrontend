@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import { IShortListing , IChat, ChatType, IChatMessage, IShortUser, useChats, useChatSubscription } from "@core/lib";
+import { IShortListing , IChat, ChatType, IChatMessage, useChats, useChatSubscription } from "@core/lib";
 import { Avatar } from "@core/components";
 import { useLocation } from "react-router-dom";
-import { setDefaultNamespace } from "i18next";
 
 interface DialogItemProps {
     chat: IChat,
@@ -26,22 +25,22 @@ const DialogItem = ({ chat, pageLoading, setPageLoading }: DialogItemProps) => {
         [allIntelocutors, chat.id]
     );
 
-    const unreadForChat = useMemo(
+    const unreadForChat = useMemo<IChatMessage[]>(
         () => unreadMessages?.filter(m => m.chatId === chat.id) ?? [],
         [unreadMessages, chat.id]
     );
 
-    const lastMessage = useMemo(
+    const lastMessage = useMemo<IChatMessage | null>(
         () =>
             unreadForChat.length > 0
                 ? unreadForChat.reduce((latest, msg) =>
-                    new Date(msg.sentAt) > new Date(latest.sentAt) ? msg : latest
+                    new Date(msg.sentAt ?? 0).getTime() > new Date(latest.sentAt ?? 0).getTime() ? msg : latest
                 )
                 : null,
         [unreadForChat]
     );
 
-    const listing = useMemo(
+    const listing = useMemo<IShortListing | null>(
         () => listings?.find(l => l.id === chat.targetId) ?? null,
         [listings, chat.targetId]
     );
@@ -55,12 +54,14 @@ const DialogItem = ({ chat, pageLoading, setPageLoading }: DialogItemProps) => {
         if(!loading && startChatId == chat.id && pageLoading) {
             setPageLoading(false);
             setCurrentChatId(chat.id);
+            return;
         } 
 
         if(!loading && !startChatId && !currentChatId && pageLoading && !isMobile) {
 
             setPageLoading(false);
             setCurrentChatId(chat.id);
+            return;
         }
 
     }, [setCurrentChatId, loading, chat, startChatId, dialogInterlocutor, currentChatId, pageLoading, setPageLoading, isMobile]);
