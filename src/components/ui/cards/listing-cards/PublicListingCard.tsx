@@ -3,36 +3,52 @@ import {
     RatingStars
 } from "@core/components";
 import {
-    checkFavorite,
+    addFavoriteListing,
     IShortListing,
     listingTypesWithRating,
-    toggleFavorite,
+    removeFavoriteListing,
     useAuth
 } from "@core/lib";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from 'react-i18next';
 
 const PublicListingCard = ({listing}: {listing: IShortListing}) => {
 
     const navigate = useNavigate();
-    const [isFavorite, setFavorite] = useState(false);
+    const [isFavorite, setFavorite] = useState<boolean>(listing.liked || false);
+    const [likesCount, setLikesCount] = useState<number>(listing.likes || 0);
     const { t } = useTranslation(['common', 'tooltips'])
     const { user } = useAuth();
 
+    console.log(listing)
+
     const isNew = (new Date().getTime() - new Date(listing.publishedAt).getTime()) < 3 * 24 * 60 * 60 * 1000;
-
-    /* useEffect(() => {
-        if (!listing.id || !user) return;
-
-        checkFavorite(listing.id).then(data => setFavorite(data));
-    }, [listing.id, user]); */
 
     const navigator = () => {
         if (listing.type == "EVENT") {
             navigate(`/event/${listing.id}`)
         } else {
             navigate(`/listing/${listing.id}`)
+        }
+    }
+
+    const toggleFavorite = async () => {
+        setFavorite(!isFavorite); // мгновенный отклик
+        if (isFavorite) {
+            removeFavoriteListing(listing.id)
+                .then(() => setLikesCount(prev => prev - 1))
+                .catch(() => {
+                    setFavorite(true);
+                    setLikesCount(prev => prev);
+                })
+        } else {
+            addFavoriteListing(listing.id)
+                .then(() => setLikesCount(prev => prev + 1))
+                .catch(() => {
+                    setFavorite(false);
+                    setLikesCount(prev => prev);
+                })
         }
     }
 
@@ -52,13 +68,12 @@ const PublicListingCard = ({listing}: {listing: IShortListing}) => {
                 />
                 {user && (
                     <div className="listing-card_actions">
+                        <span id="likesCount">{likesCount}</span>
                         <i 
                             className={`${isFavorite ? 'fa-solid active' : 'fa-regular'} fa-heart like`} 
                             onClick={(e) => {
                                 e.stopPropagation();
-                                setFavorite(!isFavorite)
-                                toggleFavorite(listing.id)
-                                    .catch(() => setFavorite(isFavorite))
+                                toggleFavorite()
                             }}
                         ></i>
                     </div>

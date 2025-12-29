@@ -50,11 +50,11 @@
 
         .listing-card_actions {
             position: absolute;
-            width: 2.5rem;
-            height: 2.5rem;
+            padding: 2px 5px;
+            width: fit-content;
             z-index: 50;
             display: inline-flex;
-            gap: 0.5rem;
+            gap: 2px;
             transition: all 0.2s ease;
             bottom: 0.5rem;
             right: 0.5rem;
@@ -63,8 +63,13 @@
             border-radius: 1.25rem;
             display: flex;
             justify-content: center;
+            align-items: center;
 
-            * {
+            #likesCount {
+                font-size: 1.2rem;
+            }
+
+            i {
                 display: flex;
                 align-items: center;
                 justify-content: center;

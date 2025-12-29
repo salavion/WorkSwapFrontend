@@ -3,8 +3,13 @@ import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import ListingGallery from "./ListingGallery";
 import { ReviewsSection, UserInfoSidebar } from "@/components";
-import { checkFavorite, getPathToCategory, ICategory, IEventPageRequest, IListingPageRequest, IShortUserProfile, toggleFavorite, useAuth, useNotification } from "@core/lib";
-import { NotFoundPage } from "@core/pages";
+import { 
+    addFavoriteListing, checkFavorite, 
+    getPathToCategory, ICategory, 
+    IEventPageRequest, IListingPageRequest, 
+    IShortUserProfile, removeFavoriteListing,
+    useAuth, useNotification 
+} from "@core/lib";
 
 interface ListingPageLayoutProps {
     details: React.ReactNode,
@@ -27,6 +32,7 @@ const ListingPageLayout = ({
     const {user, isAuthenticated} = useAuth();
     const isOwner = !!(user?.openId == author?.openId);
     const [isFavorite, setFavorite] = useState(false);
+    const [likesCount, setLikesCount] = useState<number>(0);
     const { notificate } = useNotification();
 
     const [categories, setCategories] = useState<ICategory[] | null>(null);
@@ -41,6 +47,25 @@ const ListingPageLayout = ({
     useEffect(() => {
         if (listing?.categoryId && listing.type) getPathToCategory(listing.categoryId, listing.type).then(data => setCategories(data));
     }, [listing])
+
+    const toggleFavorite = async () => {
+        setFavorite(!isFavorite); // мгновенный отклик
+        if (isFavorite) {
+            removeFavoriteListing(listing?.id)
+                .then(() => setLikesCount(prev => prev - 1))
+                .catch(() => {
+                    setFavorite(true);
+                    setLikesCount(prev => prev);
+                })
+        } else {
+            addFavoriteListing(listing?.id)
+                .then(() => setLikesCount(prev => prev + 1))
+                .catch(() => {
+                    setFavorite(false);
+                    setLikesCount(prev => prev);
+                })
+        }
+    }
 
     return (
         <main className="listing-main">
@@ -109,10 +134,8 @@ const ListingPageLayout = ({
                                         <div 
                                             className="listing-action-item"
                                             onClick={(e) => {
-                                                e.stopPropagation();
-                                                setFavorite(!isFavorite)
-                                                toggleFavorite(listing.id)
-                                                    .catch(() => setFavorite(isFavorite))
+                                                e.stopPropagation()
+                                                toggleFavorite()
                                             }}
                                         >
                                             <i className={`${isFavorite ? 'fa-solid' : 'fa-regular'} fa-heart like`}></i>
