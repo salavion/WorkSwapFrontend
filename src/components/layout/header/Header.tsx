@@ -25,7 +25,7 @@ const Header = () => {
     const { unreadNotificationsCount } = useNotification();
     
     return (
-        <header>
+        <div className="header">
             <div className="header-container">
                 <nav className="navbar">
                     <Link className="navbar-brand" to="/catalog">
@@ -57,7 +57,7 @@ const Header = () => {
                     <MobileMenu mobileVisible={mobileVisible} />
                 </nav>
             </div>
-        </header>
+        </div>
     );
 };
 

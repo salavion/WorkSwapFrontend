@@ -4,9 +4,9 @@ import { GroupedMessages, IChatMessage, privateChatTypes, useAuth, useChats } fr
 const MessagesGroup = ({group}: {group: GroupedMessages}) => {
 
     const { user } = useAuth();
-    const { allIntelocutors, currentChat } = useChats();
+    const { currentChat } = useChats();
     const isOwn = (group.senderId == user?.id)
-    const author = isOwn ? user : allIntelocutors.find((i) => i.user.id === group.senderId)?.user ?? null;
+    const author = isOwn ? user : currentChat?.interlocutors?.find((i) => i.id === group.senderId) ?? null;
 
     return (
         <div className={`messages-group ${isOwn ? 'out' : 'in'}`}>
@@ -28,7 +28,7 @@ const MessagesGroup = ({group}: {group: GroupedMessages}) => {
 
 const Message = ({message, authorName}: {message: IChatMessage, authorName?: string}) => {
 
-    const date = new Date(message.sentAt);
+    const date = new Date(message.sentAt ?? 0);
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const formattedTime = `${hours}:${minutes}`;

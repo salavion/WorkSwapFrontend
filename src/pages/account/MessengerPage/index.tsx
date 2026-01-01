@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { privateChatTypes, useChats, IChat } from "@core/lib";
 import { PublicListingCard, ChatWindow, DialogItem} from "@/components";
 
 const MessengerPage = () => {
 
-    const { chatListing, chatListingVisible, chats } = useChats();
+    const { chatListingVisible, chats, currentChat } = useChats();
 
     const { t } = useTranslation('common');
     const [pageLoading, setPageLoading] = useState<boolean>(true);
@@ -17,12 +17,12 @@ const MessengerPage = () => {
             </div>
 
             <div className="messenger-container">
-                {chatListing && (
+                {currentChat?.listing && (
                     <div 
                         id="listingCardContainer" 
                         className={`listing-card-container appearance-left-animation ${chatListingVisible ? "visible" : ''}`}
                     >
-                        <PublicListingCard listing={chatListing} />
+                        <PublicListingCard listing={currentChat?.listing} />
                     </div>
                 )}
 

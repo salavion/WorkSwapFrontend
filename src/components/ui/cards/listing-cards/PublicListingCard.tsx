@@ -21,8 +21,6 @@ const PublicListingCard = ({listing}: {listing: IShortListing}) => {
     const { t } = useTranslation(['common', 'tooltips'])
     const { user } = useAuth();
 
-    console.log(listing)
-
     const isNew = (new Date().getTime() - new Date(listing.publishedAt).getTime()) < 3 * 24 * 60 * 60 * 1000;
 
     const navigator = () => {
@@ -53,7 +51,7 @@ const PublicListingCard = ({listing}: {listing: IShortListing}) => {
     }
 
     return (
-        <article onClick={() => navigator()} className="public-listing-card">
+        <article onClick={() => navigator()} className="public-listing-card fade-down">
 
             <div 
                 className="image-wrapper"

@@ -26,6 +26,14 @@
             0 4px 6px rgba(0, 0, 0, 0.08),
             0 12px 24px rgba(0, 0, 0, 0.12);
 
+        &.new {
+            border: 4px dashed var(--border-color);
+            border-radius: 1rem;
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+
         &::before {
             content: "";
             position: absolute;

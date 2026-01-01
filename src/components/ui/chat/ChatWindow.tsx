@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import {
@@ -6,7 +6,9 @@ import {
     useChats,
     ChatType,
     privateChatTypes,
-    useActivePage
+    useActivePage,
+    IShortUser,
+    useAuth
 } from "@core/lib";
 import { Avatar } from "@core/components";
 import SendMessageArea from "./SendMessageArea.js";
@@ -16,11 +18,15 @@ import { createPortal } from "react-dom";
 const ChatWindow = ({title}: {title?: string}) => {
 
     const { t } = useTranslation('common')
+    const { user } = useAuth();
     const activePage = useActivePage();
 
-    const { messages, chatListing, setChatListingVisible, interlocutor, currentChatId, setCurrentChatId, currentChat } = useChats();
+    const { messages, setChatListingVisible, currentChatId, setCurrentChatId, currentChat } = useChats();
 
     const { error } = useWebSocket();
+
+    const chatInterlocutor = useMemo<IShortUser | null>(
+        () => currentChat?.interlocutors?.find(i => i.id != user?.id) ?? null, [currentChat]);
 
     const messagesContainer = useRef<HTMLDivElement  | null>(null);
     const isMobile = window.innerWidth <= 600;
@@ -52,20 +58,20 @@ const ChatWindow = ({title}: {title?: string}) => {
                         {currentChat?.type !== undefined &&
                             privateChatTypes.includes(currentChat.type) && (
                             <>
-                                {currentChat?.type === ChatType.LISTING_DISCUSSION && chatListing ? (
+                                {currentChat?.type === ChatType.LISTING_DISCUSSION && currentChat.listing ? (
                                     <div className="dialog-avatar">
-                                        <img id="listingImg" src={chatListing.imagePath} />
-                                        <Avatar user={interlocutor} size={40} className="user-avatar" link={false} />
+                                        <img id="listingImg" src={currentChat?.listing?.imagePath} />
+                                        <Avatar user={chatInterlocutor} size={40} className="user-avatar" link={false} />
                                     </div>
                                 ) : (
-                                    <Avatar user={interlocutor} size={50} link={false} />
+                                    <Avatar user={chatInterlocutor} size={50} link={false} />
                                 )}
                             </>
                         )}
-                        <h4 id="chatTitle">{title ?? interlocutor?.name}</h4>
+                        <h4 id="chatTitle">{title ?? chatInterlocutor?.name}</h4>
                     </div>
                     <div className="mobile-chat-actions">
-                        {chatListing?.id && (
+                        {chatInterlocutor?.id && (
                             <button 
                                 className="btn btn-primary btn-sm" 
                                 onClick={() => setChatListingVisible(prev => !prev)}
@@ -74,22 +80,22 @@ const ChatWindow = ({title}: {title?: string}) => {
                             </button>
                         )}
                         <Link 
-                            to={`/profile/${interlocutor?.openId}`} 
+                            to={`/profile/${chatInterlocutor?.openId}`} 
                             className="btn btn-outline-primary btn-sm"
                         >
                             <i className="fa-regular fa-user fa-lg"></i>
                         </Link>
                     </div>
                     <div className="chat-actions">
-                        {chatListing?.id && (
+                        {currentChat?.listing?.id && (
                             <button 
                                 className="btn btn-primary btn-sm" 
                                 onClick={() => setChatListingVisible(prev => !prev)}
                             >{t(`messenger.listing`, { ns: 'buttons' })}</button>
                         )}
-                        {interlocutor?.openId && (
+                        {chatInterlocutor?.openId && (
                             <Link 
-                                to={`/profile/${interlocutor?.openId}`} 
+                                to={`/profile/${chatInterlocutor?.openId}`} 
                                 className="btn btn-outline-primary btn-sm"
                             >
                                 {t(`messenger.profile`, { ns: 'buttons' })}
