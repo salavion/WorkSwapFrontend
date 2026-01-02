@@ -13,6 +13,7 @@ html {
     scrollbar-gutter: auto;
     
     body {
+        touch-action: pan-y;
         font-family: Arial, Helvetica, sans-serif;
         line-height: 1.5;
         color: var(--text-color);
@@ -37,12 +38,14 @@ button {
     color: var(--text-color);
     background-color: transparent;
     border: 0px solid transparent;
+    -webkit-tap-highlight-color: transparent;
 }
 
 a {
     text-decoration: none;
     transition: all 0.3s ease;
     color: inherit;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .card {

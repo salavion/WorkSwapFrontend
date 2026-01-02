@@ -403,6 +403,7 @@ $radius: var(--radius);
 				background: var(--background-l1);
 				border-radius: 0 0 0 $radius;
 				border: 2px solid var(--primary);
+				border-right-color: transparent;
 				padding: 1.25rem;
 				box-shadow: 0 2px 8px var(--shadow-color);
 				position: sticky;

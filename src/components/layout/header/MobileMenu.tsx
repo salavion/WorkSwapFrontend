@@ -6,24 +6,51 @@ import {
 import {
     Avatar, NotificationMobileButton, LanguageSwitcher
 } from "@core/components";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
+import { useSwipeable } from 'react-swipeable';
 
 const MobileMenu = () => {
 
+    const { t } = useTranslation('navigation')
+    const { user, isAuthenticated } = useAuth();
     const [mobileMenuEm, setMobileMenuEm] = useState<HTMLElement | null>(null);
-    
+    const [isOpen, setOpen] = useState<boolean>(false);
+
+    const EDGE_SIZE = 50;
+    const location = useLocation();
+    const handlers = useSwipeable({
+        onSwipedLeft: (eventData) => {
+            const startX = eventData.initial[0];
+            const screenWidth = window.innerWidth;
+
+            const target = eventData.event?.target as HTMLElement | null;
+            if (target?.closest('[data-mb-swipe-ignore]')) {
+                return;
+            }
+
+            if (startX >= screenWidth - EDGE_SIZE && !isOpen) {
+                setOpen(true);
+            }
+        },
+        onSwipedRight: () => {
+            if (isOpen) {
+                setOpen(false);
+            }
+        },
+        delta: 30,
+        trackMouse: false,
+        preventScrollOnSwipe: false,
+    });
+
     useEffect(() => {
         setMobileMenuEm(document.getElementById("mobile-menu"));
+
+        const cleanup = handlers.ref(document.body);
+        return cleanup;
     }, []);
-
-    const { t } = useTranslation('navigation')
-
-    const { user, isAuthenticated } = useAuth();
-
-    const [isOpen, setOpen] = useState<boolean>(false);
 
     useEffect(() => {
         setOpen(false);

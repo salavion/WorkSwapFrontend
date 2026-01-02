@@ -6,6 +6,7 @@ const sorts = [
 ];
 
 import { useTranslation } from 'react-i18next';
+import { useSwipeable } from 'react-swipeable';
 import { Link } from 'react-router-dom';
 import { CatalogFilters, useAuth } from '@core/lib';
 
@@ -24,9 +25,25 @@ const CatalogSidebar = ({
 
     const { user } = useAuth()
     const { t } = useTranslation(['common', 'navigation'])
+
+    const handlers = useSwipeable({
+        onSwipedRight: () => {
+            if (sidebarOpened) toggleSidebar();
+        },
+        onSwipedLeft: () => {
+            if (!sidebarOpened) toggleSidebar();
+        },
+        delta: 30,
+        trackMouse: true,
+        preventScrollOnSwipe: true,
+    });
     
     return (
-        <aside className={`catalog-sidebar ${sidebarOpened ? 'active' : ''}`}>
+        <aside 
+            {...handlers}
+            data-mb-swipe-ignore
+            className={`catalog-sidebar ${sidebarOpened ? 'active' : ''}`}
+        >
             <button onClick={() => toggleSidebar()} className="btn btn-filter-sidebar" type="button">
                 <i className="fa-solid fa-filter"></i>
             </button>

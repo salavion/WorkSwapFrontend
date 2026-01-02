@@ -13,23 +13,11 @@ const CatalogHeader = ({
 
     const { t } = useTranslation('categories')
 
-    const [categoriesMenu, setCategoriesMenu] = useState<boolean>(false);
-
     return (
         <div className="catalog-header">
             <div className="catalog-header-content">
 
-                <button 
-                    className="btn btn-primary categories-btn" 
-                    onClick={() => setCategoriesMenu(prev => !prev)}
-                >
-                    <div><i className="fa-solid fa-list fa-lg perm-light"></i></div>
-                    <span className="normal-only">{t('category.all-categories')}</span>
-                </button>
-
-                <CatalogCategories 
-                    categoriesMenu={categoriesMenu}
-                    setCategoriesMenu={setCategoriesMenu}
+                <CatalogCategories
                     filters={filters}
                     updateFilter={updateFilter}
                 />

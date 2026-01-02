@@ -34,7 +34,7 @@ const PrivateListingCard  = ({listing}: {listing: IFullListing}) => {
             <img 
                 src={listing.imagePath || `/images/default-listing.svg`}
                 onError={(e) => { e.currentTarget.src = `/images/default-listing.svg`; }}
-                alt="Изображение объявления"
+                /* alt="Изображение объявления" */
             />
 
             <div className="listing-card_body">

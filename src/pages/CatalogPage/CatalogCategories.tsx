@@ -1,20 +1,14 @@
-import { useCallback, useEffect, useState, useRef, useMemo, Dispatch, SetStateAction, ReactNode } from "react";
+import { useCallback, useEffect, useState, useRef, useMemo, ReactNode } from "react";
 import { CatalogFilters, getAllCategories, ICategory, ListingType, ListingTypeValue } from "@core/lib";
 import { useTranslation } from 'react-i18next';
 
 interface CatalogCategoriesProps {
-    categoriesMenu: boolean;
-    setCategoriesMenu: Dispatch<SetStateAction<boolean>>;
     filters: CatalogFilters;
     updateFilter: (key: string, value: string | boolean | number | null) => void;
 }
 
-const CatalogCategories = ({
-    categoriesMenu,
-    setCategoriesMenu,
-    filters,
-    updateFilter
-}: CatalogCategoriesProps) => {
+const CatalogCategories = ({ filters, updateFilter }: CatalogCategoriesProps) => {
+    const [categoriesMenu, setCategoriesMenu] = useState<boolean>(false);
     const [categories, setCategories] = useState<Record<string, ICategory[]> | null>(null);
     const [listingType, setListingType] = useState<ListingTypeValue>(ListingType.PRODUCT);
     const { t } = useTranslation(['categories', 'tooltips']);
@@ -22,13 +16,11 @@ const CatalogCategories = ({
     const timeoutRef = useRef<number>(0);
 
     useEffect(() => {
-        getAllCategories()
-            .then(data => setCategories(data))
+        getAllCategories().then(data => setCategories(data))
     }, []);
 
     const rootCategories = useMemo(() => {
         if (!categories) return [];
-        console.log(categories)
         return categories[listingType]?.filter(cat => cat.parentId == null) || []
     }, [categories, listingType]);
 
@@ -48,71 +40,80 @@ const CatalogCategories = ({
     const handleMouseEnter = () => clearTimeout(timeoutRef.current);
 
     return (
-        <div
-        className={`categories-menu ${categoriesMenu ? "active" : ""}`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        >
-        <div className="category-types">
-            {[ListingType.SERVICE, ListingType.PRODUCT].map(type =>
-            <button
-                key={type}
-                className="hover"
-                value={type}
-                onClick={() => setListingType(type)}
+        <>
+            <button 
+                className="btn btn-primary categories-btn" 
+                onClick={() => setCategoriesMenu(prev => !prev)}
             >
-                {t(`listingType.${type.toUpperCase()}`)}
-                <div className={`indicator ${listingType == type ? "active" : ""}`}>
-                <i className="fa-solid fa-angle-down"></i>
-                </div>
+                <div><i className="fa-solid fa-list fa-lg perm-light"></i></div>
+                <span className="normal-only">{t('category.all-categories')}</span>
             </button>
-            )}
-        </div>
-        <div className="categories-container">
-            <div className="categories-sidebar-container">
-            <div className="categories-list">
-                {rootCategories.map((cat) =>
-                <CategoryButton
-                    key={cat.id}
-                    active={filters.categoryId === cat.id}
-                    onClick={() =>
-                    filters.categoryId === cat.id
-                        ? updateFilter("categoryId", null)
-                        : updateFilter("categoryId", cat.id)
-                    }
-                >
-                    {t(`category.${listingType}.${cat.name}`)}
-                </CategoryButton>
-                )}
-            </div>
-            </div>
-            <div className="subcategories-container">
-            {filters.categoryId && children(filters.categoryId).length > 0 && (
-                <div className="categories-list">
-                {children(filters.categoryId).map(child =>
-                    <button
-                    key={child.id}
-                    className={`sub-category-item hover ${filters.categoryId === child.id ? "active" : ""}`}
-                    onClick={() =>
-                        filters.categoryId === child.id
-                        ? updateFilter("categoryId", null)
-                        : updateFilter("categoryId", child.id)
-                    }
-                    >
-                    {t(`category.${listingType}.${child.name}`)}
-                    </button>
-                )}
+            <div
+                className={`categories-menu ${categoriesMenu ? "active" : ""}`}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+            >
+                <div className="category-types">
+                    {[ListingType.SERVICE, ListingType.PRODUCT].map(type =>
+                        <button
+                            key={type}
+                            className="hover"
+                            value={type}
+                            onClick={() => setListingType(type)}
+                        >
+                            {t(`listingType.${type.toUpperCase()}`)}
+                            <div className={`indicator ${listingType == type ? "active" : ""}`}>
+                                <i className="fa-solid fa-angle-down"></i>
+                            </div>
+                        </button>
+                    )}
                 </div>
-            )}
+                <div className="categories-container">
+                    <div className="categories-sidebar-container">
+                        <div className="categories-list">
+                            {rootCategories.map((cat) =>
+                                <CategoryButton
+                                    key={cat.id}
+                                    active={filters.categoryId === cat.id}
+                                    onClick={() =>
+                                    filters.categoryId === cat.id
+                                        ? updateFilter("categoryId", null)
+                                        : updateFilter("categoryId", cat.id)
+                                    }
+                                >
+                                    {t(`category.${listingType}.${cat.name}`)}
+                                </CategoryButton>
+                            )}
+                        </div>
+                    </div>
+                    <div className="subcategories-container">
+                        {filters.categoryId && children(filters.categoryId).length > 0 && (
+                            <div className="categories-list">
+                                {children(filters.categoryId).map(child =>
+                                    <button
+                                        key={child.id}
+                                        className={`sub-category-item hover ${filters.categoryId === child.id ? "active" : ""}`}
+                                        onClick={() =>
+                                            filters.categoryId === child.id
+                                            ? updateFilter("categoryId", null)
+                                            : updateFilter("categoryId", child.id)
+                                        }
+                                    >
+                                        {t(`category.${listingType}.${child.name}`)}
+                                    </button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+                {selectedCategory && (
+                    <span className="selected-category-label">
+                        <span>{t(`catalog.selectedCategory`, { ns: 'tooltips' })}: </span>
+                        <span className="selected-category">{t(`category.${listingType}.${selectedCategory.name}`)}</span>
+                    </span>
+                )}
             </div>
-        </div>
-        {selectedCategory && (
-            <span className="selected-category-label">
-            <span>{t(`catalog.selectedCategory`, { ns: 'tooltips' })}: </span>
-            <span className="selected-category">{t(`category.${listingType}.${selectedCategory.name}`)}</span>
-            </span>
-        )}
-        </div>
+        </>
     );
 };
 
