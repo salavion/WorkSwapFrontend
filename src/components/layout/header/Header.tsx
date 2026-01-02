@@ -1,28 +1,12 @@
-import { ThemeChanger, LanguageSwitcher} from "@core/components";
+import { ThemeChanger} from "@core/components";
 import { useTranslation } from 'react-i18next';
-import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import MobileMenu from "./MobileMenu";
 import NavButtons from "./NavButtons";
-import { useNotification } from "@core/lib";
 
 const Header = () => {
 
     const { t } = useTranslation('common')
-
-    const location = useLocation();
-
-    const [mobileVisible, setMobileVisible] = useState<boolean>(false);
-
-    useEffect(() => {
-        setMobileVisible(false);
-    }, [location]);
-
-    function mobileMenuToggle() {
-        setMobileVisible(!mobileVisible)
-    }
-
-    const { unreadNotificationsCount } = useNotification();
     
     return (
         <div className="header">
@@ -40,21 +24,9 @@ const Header = () => {
                         <div className="nav-link">
                             <ThemeChanger id={"themeChangerHeader"}/>
                         </div>
-                        <button 
-                            onClick={mobileMenuToggle} 
-                            className="navbar-toggler" 
-                            id="notificationAnchor"
-                        >
-                            <div><i className="fa-solid fa-bars"></i></div>
-                            {unreadNotificationsCount > 0 && (
-                                <span id="unreadNotifications" className="unread-notifications-count">
-                                    {unreadNotificationsCount}
-                                </span>
-                            )}
-                        </button>
+                        <MobileMenu />
                     </div>
                     <NavButtons />
-                    <MobileMenu mobileVisible={mobileVisible} />
                 </nav>
             </div>
         </div>

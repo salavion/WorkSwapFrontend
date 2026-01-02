@@ -171,16 +171,8 @@ $min-radius: 1px;
                 margin-right: auto;
 
                 .message {
-                    background-color: var(--background);
+                    background-color: var(--message-in);
                     border-radius: $small-radius $big-radius $big-radius $small-radius;
-
-                    @include mobile {
-                        background-color: var(--message-in);
-                    }
-
-                    &:last-child {
-                        border-radius: $small-radius $big-radius $big-radius $min-radius;
-                    }
 
                     &:first-child {
                         border-radius: $big-radius $big-radius $big-radius $small-radius;
@@ -188,6 +180,10 @@ $min-radius: 1px;
                         #authorName {
                             display: block;
                         }
+                    }
+
+                    &:last-child {
+                        border-radius: $small-radius $big-radius $big-radius $min-radius;
                     }
                 }
             }
@@ -198,15 +194,15 @@ $min-radius: 1px;
 
                 .message {
                     margin-left: auto;
-                    background-color: var(--primary-dark);
+                    background-color: var(--message-out);
                     border-radius: $big-radius $small-radius $small-radius $big-radius;
-
-                    &:last-child {
-                        border-radius: $big-radius $small-radius $min-radius $big-radius;
-                    }
 
                     &:first-child {
                         border-radius: $big-radius $big-radius $small-radius $big-radius;
+                    }
+                    
+                    &:last-child {
+                        border-radius: $big-radius $small-radius $min-radius $big-radius;
                     }
                 }
             }

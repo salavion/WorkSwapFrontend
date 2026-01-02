@@ -47,8 +47,8 @@
     @include btn-outline(var(--danger), var(--danger), var(--background-l1));
 }
 
-.btn-primary {
-    @include btn-filled(var(--primary), var(--primary-dark), var(--primary-light), var(--primary-dark));
+.btn-outline-primary {
+    @include btn-outline(var(--primary), var(--primary-dark));
 }
 
 // ==============================
