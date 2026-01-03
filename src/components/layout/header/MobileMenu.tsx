@@ -19,7 +19,7 @@ const MobileMenu = () => {
     const [mobileMenuEm, setMobileMenuEm] = useState<HTMLElement | null>(null);
     const [isOpen, setOpen] = useState<boolean>(false);
 
-    const EDGE_SIZE = 50;
+    const EDGE_SIZE = 120;
     const location = useLocation();
     const handlers = useSwipeable({
         onSwipedLeft: (eventData) => {
