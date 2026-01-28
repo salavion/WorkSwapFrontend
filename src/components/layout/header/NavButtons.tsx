@@ -7,6 +7,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "@core/lib";
+import { AUTH_BASE } from "@core/config";
 
 const NavButtons = () => {
 
@@ -56,12 +57,12 @@ const NavButtons = () => {
                     </Link>
                 </div>
             ) : (
-                <Link
-                    to={`/login?redirect=${window.location.pathname}`}
+                <a
+                    href={`${AUTH_BASE}/auth?redirect=${window.location.pathname}`}
                     className="btn btn-outline-primary login-btn"
                 >
                     <span>{t("login")}</span>
-                </Link>
+                </a>
             )}
 
             <LanguageSwitcher/>
